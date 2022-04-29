@@ -1,3 +1,3 @@
-import createElement from "./createElement";
+import createElement from "./createElement.js";
 
 export default createElement;
