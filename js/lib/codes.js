@@ -1,4 +1,14 @@
 export default {
+    'Backquote': {
+        en: {
+            default: '`', 
+            shift: '~'
+        },
+        ru: {
+            default: 'ё', 
+            shift: 'Ё'
+        }
+    },
     'Digit1': {
         en: {
             default: '1', 

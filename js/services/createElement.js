@@ -3,27 +3,41 @@ import codes from "../lib/codes.js";
 export default function createElement({
     type,
     classes,
-    // styles, 
     attributes, 
-    // props, 
     eventHandlers,
     appendTo }) {
     let elementType = type || 'div';
     let elementClasses = classes || [];
-    // let elementStyles = styles || {};
     let elementAttributes = attributes || {};
-    // let elementProps = props || {};
     let elementEventHandlers = eventHandlers || {};
     let elementAppendTo = appendTo || 'body';
 
     let element = document.createElement(elementType);
     for (let className of elementClasses) { element.classList.add(className) }
-    // for (let key in elementStyles) { element.style[key] = elementStyles[key] }
     for (let key in elementAttributes) { element.setAttribute(key, elementAttributes[key]) }
-    // for (let key in elementProps) { element[key] = elementProps[key] }
     for (let key in elementEventHandlers) { element.addEventListener(key, elementEventHandlers[key]) }
     
-    if (elementAttributes['data-code']) element.innerHTML = `${codes[elementAttributes['data-code']].en.default}`;
+    if (element.dataset.code) {
+      const elementCode = codes[element.dataset.code];
+      const elementContent = document.createElement('div');
+      elementContent.classList.add('key__content');
+
+      for (let key in elementCode) {
+        const innerText = document.createElement('div');
+        const innerTextDefault = document.createElement('span');
+        const innerTextOnShift = document.createElement('span');
+        innerText.classList.add('key__values', `key__values_${key}`);
+        innerTextDefault.classList.add('key__value', 'key__value_default');
+        innerTextOnShift.classList.add('key__value', 'key__value_shift');
+        innerTextDefault.innerText = `${elementCode[key].default}`;
+        innerTextOnShift.innerText = `${elementCode[key].shift}`;
+        innerText.append(innerTextDefault);
+        innerText.append(innerTextOnShift);
+        elementContent.append(innerText);
+      }
+      
+      element.append(elementContent);
+    }
 
     document.querySelector(elementAppendTo).append(element);
 
