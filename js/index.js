@@ -25,14 +25,6 @@ createElement({
     appendTo: '.wrapper'
 });
 
-const textarea = document.querySelector('#textarea');
-textarea.focus();
-
-function hanleKeyClick(e) {
-    const keyText = e.target.innerText;
-    textarea.value += keyText;
-}
-
 for (let key in codes) {
     createElement({
         type: 'div',
@@ -45,19 +37,27 @@ for (let key in codes) {
     });
 }
 
-const languages = {
-    en: false,
-    ru: true
-}
-
+const textarea = document.querySelector('#textarea');
 const keys = document.querySelectorAll('.key');
 const keyValues = document.querySelectorAll('.key__value');
 const keyValuesDefaultEN = document.querySelectorAll('.key__values_en .key__value_default');
 const keyValuesShiftEN = document.querySelectorAll('.key__values_en .key__value_shift');
 const keyValuesDefaultRU = document.querySelectorAll('.key__values_ru .key__value_default');
 const keysValuesShiftRU = document.querySelectorAll('.key__values_ru .key__value_shift');
+const keyMap = {};
+const languages = { en: true, ru: false }
 
-console.log();
+textarea.focus();
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
+
+function hanleKeyClick(e) {
+    if (!keyMap[e.currentTarget.dataset.code] || !keyMap[e.currentTarget.dataset.code] === false) {
+        const keyText = e.target.innerText;
+        textarea.value += keyText;
+    } 
+}
 
 function removeActiveClasses() {
     keyValues.forEach(key => key.classList.remove('key__value_active'));
@@ -65,6 +65,7 @@ function removeActiveClasses() {
 
 function setActiveDefaultKeys() {
     removeActiveClasses();
+
     const keyValues = languages.en ? keyValuesDefaultEN : keyValuesDefaultRU
     keyValues.forEach(key => key.classList.add('key__value_active'));
 }
@@ -74,24 +75,19 @@ setActiveDefaultKeys();
 function toggleActiveLanguage() {
     languages.en = !languages.en
     languages.ru = !languages.ru
+
     setActiveDefaultKeys();
 }
 
-const keyMap = {};
-
 function setActiveShiftKeys() {
     removeActiveClasses();
+    
     const keyValues = languages.en ? keyValuesShiftEN : keysValuesShiftRU
     keyValues.forEach(key => key.classList.add('key__value_active'));
 }
 
-document.addEventListener('keydown', handleKeyDown);
-document.addEventListener('keypress', handleKeyPress);
-document.addEventListener('keyup', handleKeyUp);
-
 function handleKeyDown(e) {
     const keyOnKeyboard = [...keys].find(key => key.dataset.code === e.code);
-
     if (keyOnKeyboard) { keyOnKeyboard.classList.add('key_active'); }
 
     if (!keyMap[e.code] || keyMap[e.code] === false) {
@@ -107,20 +103,15 @@ function handleKeyDown(e) {
     textarea.focus();
 }
 
-function handleKeyPress(e) {
-    textarea.value += e.key;
-}
-
 function handleKeyUp(e) {
     const keyOnKeyboard = [...keys].find(key => key.dataset.code === e.code);
-
     if (keyOnKeyboard) { keyOnKeyboard.classList.remove('key_active'); }
 
     keyMap[e.code] = false;
+
+    if (!textarea.value) { textarea.blur(); }
     
     setActiveDefaultKeys();
-
-    textarea.blur();
 }
 
 
