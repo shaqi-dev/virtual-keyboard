@@ -26,6 +26,7 @@ createElement({
 });
 
 const textarea = document.querySelector('#textarea');
+textarea.focus();
 
 function hanleKeyClick(e) {
     const keyText = e.target.innerText;
@@ -101,9 +102,9 @@ function handleKeyDown(e) {
         if (keyMap['ShiftLeft'] && !keyMap['AltLeft']) {
             setActiveShiftKeys();
         };
-
-        console.log(keyMap);
     }
+
+    textarea.focus();
 }
 
 function handleKeyPress(e) {
@@ -118,6 +119,8 @@ function handleKeyUp(e) {
     keyMap[e.code] = false;
     
     setActiveDefaultKeys();
+
+    textarea.blur();
 }
 
 
