@@ -1,19 +1,70 @@
 .key
     min-width: 4rem
     min-height: 4rem
-    padding: 0 1.5rem
-    background: #555555
-    color: #ffffff
-    font-size: 2rem
+    background: #ffffff
+    color: #000000
+    border-radius: 7px
+    cursor: pointer
+    transition: 200ms all ease
+    flex-basis: auto
+    &:hover
+        background: #d6e3ff
+    &:active
+        background: #7aa2f7
+        border-radius: 30px
+    &_active
+        pointer-events: none
+        background: #7aa2f7
+        border-radius: 30px
+    &_functional
+        background: #A9B1BC
+        &:hover
+            background: #d6e3ff
+        &:active
+            background: #7aa2f7
+            border-radius: 30px
+        &_active
+            pointer-events: none
+            background: #7aa2f7
+            border-radius: 30px
+    &_delete
+        width: 71px
+    &_enter
+        width: 148px
+    &_shiftleft
+        width: 150px
+    &_shiftright
+        width: 150px
+    &_controlright
+        width: 73px
+    &_controlright
+        width: 73px
+    &_space
+        width: 516px
+
+.key__content
+    height: 100%
+    width: 100%
+    padding: 0 1rem
+    font-size: 1.6rem
     line-height: 4rem
     text-align: center
-    border-radius: 6px
-    cursor: pointer
-    transition: 30ms ease
-    &:hover
-        background: #777777
 
 .key__value
     display: none
+    -webkit-touch-callout: none
+    -webkit-user-select: none
+    -khtml-user-select: none
+    -moz-user-select: none 
+    -ms-user-select: none 
+    user-select: none 
     &_active
         display: block
+
+.key__icon
+    height: 100%
+    width: 100%
+
+
+        
+    

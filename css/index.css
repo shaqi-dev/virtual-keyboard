@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto&display=swap");
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
@@ -188,15 +189,16 @@ template {
 }
 
 body {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
   font-size: 10px;
-  background: #ebebeb;
 }
 
-.show {
-  display: block;
+object {
+  pointer-events: none;
 }
 
-.wrapper {
+.app {
   min-height: 100vh;
   margin: 0 auto;
   display: -webkit-box;
@@ -216,44 +218,128 @@ body {
 }
 
 .textarea {
-  width: 800px;
-  height: 200px;
+  width: 1200px;
+  height: 300px;
+  padding: 20px;
+  font-family: "Fira Code", monospace;
   font-size: 1.6rem;
-  border: 2px solid #000;
-  border-radius: 6px;
+  background: #1a1b26;
+  color: #7aa2f7;
+  border-radius: 13px;
   resize: none;
 }
 
 .keyboard {
+  width: 1200px;
+  padding: 20px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  gap: 5px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 13px;
+  border-radius: 13px;
+  background: #D2D5DB;
 }
 
 .key {
   min-width: 4rem;
   min-height: 4rem;
-  padding: 0 1.5rem;
-  background: #555555;
-  color: #ffffff;
-  font-size: 2rem;
-  line-height: 4rem;
-  text-align: center;
-  border-radius: 6px;
+  background: #ffffff;
+  color: #000000;
+  border-radius: 7px;
   cursor: pointer;
-  -webkit-transition: 30ms ease;
-  transition: 30ms ease;
+  -webkit-transition: 200ms all ease;
+  transition: 200ms all ease;
+  -ms-flex-preferred-size: auto;
+      flex-basis: auto;
 }
 
 .key:hover {
-  background: #777777;
+  background: #d6e3ff;
+}
+
+.key:active {
+  background: #7aa2f7;
+  border-radius: 30px;
+}
+
+.key_active {
+  pointer-events: none;
+  background: #7aa2f7;
+  border-radius: 30px;
+}
+
+.key_functional {
+  background: #A9B1BC;
+}
+
+.key_functional:hover {
+  background: #d6e3ff;
+}
+
+.key_functional:active {
+  background: #7aa2f7;
+  border-radius: 30px;
+}
+
+.key_functional_active {
+  pointer-events: none;
+  background: #7aa2f7;
+  border-radius: 30px;
+}
+
+.key_delete {
+  width: 71px;
+}
+
+.key_enter {
+  width: 148px;
+}
+
+.key_shiftleft {
+  width: 150px;
+}
+
+.key_shiftright {
+  width: 150px;
+}
+
+.key_controlright {
+  width: 73px;
+}
+
+.key_controlright {
+  width: 73px;
+}
+
+.key_space {
+  width: 516px;
+}
+
+.key__content {
+  height: 100%;
+  width: 100%;
+  padding: 0 1rem;
+  font-size: 1.6rem;
+  line-height: 4rem;
+  text-align: center;
 }
 
 .key__value {
   display: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .key__value_active {
   display: block;
+}
+
+.key__icon {
+  height: 100%;
+  width: 100%;
 }

@@ -22,20 +22,29 @@ export default function createElement({
       const elementContent = document.createElement('div');
       elementContent.classList.add('key__content');
 
-      for (let key in elementCode) {
-        const innerText = document.createElement('div');
-        const innerTextDefault = document.createElement('span');
-        const innerTextOnShift = document.createElement('span');
-        innerText.classList.add('key__values', `key__values_${key}`);
-        innerTextDefault.classList.add('key__value', 'key__value_default');
-        innerTextOnShift.classList.add('key__value', 'key__value_shift');
-        innerTextDefault.innerText = `${elementCode[key].default}`;
-        innerTextOnShift.innerText = `${elementCode[key].shift}`;
-        innerText.append(innerTextDefault);
-        innerText.append(innerTextOnShift);
-        elementContent.append(innerText);
+      // if (element.dataset.code === 'Backspace') {
+      //   const innerIcon = document.createElement('object');
+      //   innerIcon.setAttribute('type', "image/svg+xml");
+      //   innerIcon.setAttribute('data', `../../assets/icons/${element.dataset.code.toLowerCase()}.svg`);
+      //   innerIcon.classList.add('key__icon');
+      //   elementContent.append(innerIcon);
+      // } else 
+      // {
+        for (let key in elementCode) {
+          const innerText = document.createElement('div');
+          const innerTextDefault = document.createElement('span');
+          const innerTextOnShift = document.createElement('span');
+          innerText.classList.add('key__values', `key__values_${key}`);
+          innerTextDefault.classList.add('key__value', 'key__value_default');
+          innerTextOnShift.classList.add('key__value', 'key__value_shift');
+          innerTextDefault.innerText = `${elementCode[key].default}`;
+          innerTextOnShift.innerText = `${elementCode[key].shift}`;
+          innerText.append(innerTextDefault);
+          innerText.append(innerTextOnShift);
+          elementContent.append(innerText);
+        // }
       }
-      
+
       element.append(elementContent);
     }
 
