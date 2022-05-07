@@ -2,12 +2,12 @@ import createElement from "../../services/createElement.js";
 import codes from "../../lib/codes.js";
 
 export default class Keyboard {
-    constructor(id, textareaId, appendTo) {
+    constructor(id, textareaId, appendTo, lang) {
         this.id = id;
         this.textareaId = textareaId;
         this.appendTo = appendTo;
         this.keyMap = {};
-        this.languages = { en: true, ru: false };
+        this.languages = { en: false, ru: false };
         this.functionalKeys = [
             'Tab', 'CapsLock', 'ShiftLeft', 'ControlLeft', 'AltLeft', 'ShiftRight', 
             'ControlRight', 'AltRight', 'MetaLeft', 'MetaRight', 'Backspace', 'Delete', 
@@ -18,6 +18,9 @@ export default class Keyboard {
     }
 
     init() {
+        const lang = localStorage.getItem('language') || 'en';
+        this.languages[lang] = true;
+        this.languages.en ? localStorage.setItem('language', 'en') : localStorage.setItem('language', 'ru');
         this.textarea = document.querySelector(`#${this.textareaId}`);
         textarea.value = "console.log('Hello RS Student!');";
         console.log('Hello RS Student!');
@@ -86,6 +89,8 @@ export default class Keyboard {
     toggleActiveLanguage() {
         this.languages.en = !this.languages.en
         this.languages.ru = !this.languages.ru
+
+        this.languages.en ? localStorage.setItem('language', 'en') : localStorage.setItem('language', 'ru');
     
         this.updateKeys();
     }
