@@ -272,7 +272,6 @@ object {
 }
 
 .key_active {
-  pointer-events: none;
   background: #7aa2f7;
   border-radius: 30px;
   -webkit-box-shadow: 0px 0px 0px 0px rgba(34, 60, 80, 0.25);
@@ -297,7 +296,6 @@ object {
 }
 
 .key_functional_active {
-  pointer-events: none;
   background: #7aa2f7;
   border-radius: 30px;
   -webkit-box-shadow: 0px 0px 0px 0px rgba(34, 60, 80, 0.4);

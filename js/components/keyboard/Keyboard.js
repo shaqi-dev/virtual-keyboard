@@ -13,6 +13,8 @@ export default class Keyboard {
             'ControlRight', 'AltRight', 'MetaLeft', 'MetaRight', 'Backspace', 'Delete', 
             'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'Space'
         ];
+        this.capslock = false;
+        this.shift = false;
     }
 
     init() {
@@ -21,7 +23,7 @@ export default class Keyboard {
         console.log('Hello RS Student!');
         this.initKeyboard();
         this.initKeys();
-        this.setDefaultKeys();
+        this.updateKeys();
         this.initListeners();
     }
 
@@ -54,6 +56,7 @@ export default class Keyboard {
                 attributes: {'data-code': key}, 
                 eventHandlers: {
                     'mousedown': this.handleEvent,
+                    'mouseup': this.handleEvent
                 },
                 appendTo: `#${this.id}`
             });
@@ -64,7 +67,7 @@ export default class Keyboard {
         this.keyValuesDefaultEN = document.querySelectorAll('.key__values_en .key__value_default');
         this.keyValuesShiftEN = document.querySelectorAll('.key__values_en .key__value_shift');
         this.keyValuesDefaultRU = document.querySelectorAll('.key__values_ru .key__value_default');
-        this.keysValuesShiftRU = document.querySelectorAll('.key__values_ru .key__value_shift');
+        this.keyValuesShiftRU = document.querySelectorAll('.key__values_ru .key__value_shift');
     }
 
     initListeners() {
@@ -76,29 +79,187 @@ export default class Keyboard {
         this.textarea.focus();
     }
 
+    removeFocus() {
+        this.textarea.blur();
+    }
+
     toggleActiveLanguage() {
         this.languages.en = !this.languages.en
         this.languages.ru = !this.languages.ru
     
-        this.setDefaultKeys();
+        this.updateKeys();
     }
 
     removeActiveClasses() {
         this.keyValues.forEach(key => key.classList.remove('key__value_active'));
     }
 
-    setDefaultKeys() {
-        this.removeActiveClasses();
-
-        const keyValues = this.languages.en ? this.keyValuesDefaultEN : this.keyValuesDefaultRU
-        keyValues.forEach(key => key.classList.add('key__value_active'));
+    toggleCapsLock() {
+        this.capslock = !this.capslock;
+        const capsLockKey = [...this.keys].find(key => key.dataset.code === 'CapsLock');
+        capsLockKey.classList.toggle('key_functional_active', this.capslock);
+        this.updateKeys();
     }
 
-    setShiftKeys() {
+    toggleShift(code) {
+        this.shift = !this.shift;
+        const capsLockKey = [...this.keys].find(key => key.dataset.code === code);
+        capsLockKey.classList.toggle('key_functional_active', this.shift);
+        this.updateKeys();
+    }
+
+    updateKeys() {
         this.removeActiveClasses();
+
+        if (this.shift) {
+            const keyValues = this.languages.en ? this.keyValuesShiftEN : this.keyValuesShiftRU
+            keyValues.forEach(key => key.classList.add('key__value_active'));
+        } else if (this.capslock) {
+            const keyValuesDefault = this.languages.en ? this.keyValuesDefaultEN : this.keyValuesDefaultRU;
+            const keyValuesShift = this.languages.en ? this.keyValuesShiftEN : this.keyValuesShiftRU;
+            const additionalCharsRU = ['Backquote', 'BracketLeft', 'BracketRight', 'Semicolon', 'Quote', 'Comma', 'Period']
+            const keyValuesFiltered = [...keyValuesShift].filter(key => {
+                const code = key.parentElement.parentElement.parentElement.dataset.code;
+
+                if (this.languages.en) {
+                    if (code.slice(0, 3) === 'Key') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (code.slice(0, 3) === 'Key' || additionalCharsRU.includes(code)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            
+            keyValuesDefault.forEach(key => key.classList.add('key__value_active'));
+            keyValuesFiltered.forEach(key => {
+                key.parentElement.querySelector('.key__value_active').classList.remove('key__value_active');
+                key.classList.add('key__value_active');
+            });
+        } else {
+            const keyValuesDefault = this.languages.en ? this.keyValuesDefaultEN : this.keyValuesDefaultRU;
+            keyValuesDefault.forEach(key => key.classList.add('key__value_active'));
+        }
+    }
+
+    getPosition() {
+        return {
+            start: this.textarea.selectionStart, 
+            end: this.textarea.selectionEnd
+        };
+    }
+
+    setPosition(start, end) {
+        this.textarea.selectionStart = start;
+        this.textarea.selectionEnd = end;
+    };
+
+    deleteChar(code) {
+        const value = this.textarea.value;
+        const length = this.textarea.length;
+        const pos = this.getPosition();
+
+        const setValue = (first, second) => {
+            this.textarea.value = value.slice(first[0], first[1]) + value.slice(second[0], second[1]);
+        }
         
-        const keyValues = this.languages.en ? this.keyValuesShiftEN : this.keysValuesShiftRU
-        keyValues.forEach(key => key.classList.add('key__value_active'));
+        if (pos.start !== pos.end) {
+            setValue([0, pos.start], [pos.end, length]);
+        } else if (code === 'Backspace' && pos.start !== 0) {
+            setValue([0, pos.start - 1], [pos.end, length]);
+            pos.start -= 1;
+            pos.end -= 1;
+        } else if (code === 'Delete' && pos.end !== length) {
+            setValue([0, pos.start], [pos.end + 1, length]);
+        }
+
+        this.setPosition(pos.start, pos.start);
+    }
+
+    addChar(char) {
+        const value = this.textarea.value;
+        const length = this.textarea.length;
+        const pos = this.getPosition();
+
+        const setValue = (first, second) => {
+            this.textarea.value = value.slice(first[0], first[1]) + char + value.slice(second[0], second[1]);
+            pos.start += 1;
+            pos.end += 1;
+        }
+        
+        setValue([0, pos.start], [pos.end, length]);
+        
+        this.setPosition(pos.start, pos.start);
+    }
+
+    dispatchAction(eventType, code, value) {
+        if (eventType === 'keydown') {
+            if (
+                code === 'Backspace' ||
+                code === 'ArrowUp' ||
+                code === 'ArrowRight' ||
+                code === 'ArrowDown' ||
+                code === 'ArrowLeft' ||
+                code === 'AltLeft' ||
+                (code === 'KeyZ' && (this.keyMap['ControlLeft'] || this.keyMap['ControlRight']))
+                ) {
+                this.setFocus();
+                return;
+            }
+        } 
+
+        switch (code) {
+            case 'Backspace':
+                this.deleteChar(code);
+                break;
+            case 'Delete':
+                this.deleteChar(code);
+                break;
+            case 'CapsLock':
+                this.toggleCapsLock();
+                break;
+            case 'ShiftLeft':
+            case 'ShiftRight':
+                this.toggleShift(code);
+                break;
+            case 'Space':
+                this.addChar(' ');
+                break;
+            case 'Tab':
+                this.setFocus();
+                this.addChar('\t');
+                break;
+            case 'Enter':
+                this.addChar('\n');
+                break;
+            case 'KeyZ':
+                if (this.keyMap['ControlLeft'] || this.keyMap['ControlRight']) {
+                    this.setFocus();
+                } else {
+                    this.addChar(value);
+                }
+                break;
+            case 'ControlLeft':
+            case 'ControlRight':
+                this.setFocus();                
+                break;
+            case 'AltLeft':
+                if (this.shift) {
+                    this.toggleActiveLanguage();
+                }
+            case 'AltRight':
+            case 'MetaLeft':
+            case 'MetaRight':
+                break;
+            default:
+                this.addChar(value);
+                break;
+        } 
     }
 
     handleEvent = (e) => {
@@ -106,97 +267,52 @@ export default class Keyboard {
             case 'mousedown': {
                 const key = e.currentTarget;
                 const code = key.dataset.code;
-                
-                const handleDeleteChar = (code) => {
-                    const value = this.textarea.value;
-                    const length = this.textarea.length;
-                    const pos = {
-                        start: this.textarea.selectionStart, 
-                        end: this.textarea.selectionEnd
-                    };
-            
-                    const setValue = (first, second) => {
-                        this.textarea.value = value.slice(first[0], first[1]) + value.slice(second[0], second[1]);
-                    }
-            
-                    const setPosition = () => {
-                        this.textarea.selectionStart = pos.start;
-                        this.textarea.selectionEnd = pos.start;
-                    };
-                    
-                    if (pos.start !== pos.end) {
-                        setValue([0, pos.start], [pos.end, length]);
-                    } else if (code === 'Backspace' && pos.start !== 0) {
-                        setValue([0, pos.start - 1], [pos.end, length]);
-                        pos.start -= 1;
-                        pos.end -= 1;
-                    } else if (code === 'Delete' && pos.end !== length) {
-                        setValue([0, pos.start], [pos.end + 1, length]);
-                    }
-            
-                    setPosition();
-                    this.setFocus();
-                }
 
-                if (!this.keyMap[code] || this.keyMap[code] === false) {
-                    switch (code) {
-                        case 'Backspace':
-                            handleDeleteChar(code);
-                            break;
-                        case 'Delete':
-                            handleDeleteChar(code);
-                            break;
-                        default:
-                            this.textarea.value += e.target.innerText;
-                            this.setFocus();
-                            break;
-                    }
-                }
-        
+                this.dispatchAction(e.type, code, e.target.innerText);
+            
                 break;
-            }   
+            }
+            case 'mouseup': {
+                this.setFocus();
+                break;
+            }
             case 'keydown': {
                 const code = e.code;
                 const key = [...this.keys].find(key => key.dataset.code === code);
 
+                if (code === 'Tab' || code === 'AltLeft') {
+                    e.preventDefault();
+                }
+               
                 if (key) {
-                    if (code === 'CapsLock') {
-                        if (key.classList.contains('key_functional')) {
-                            key.classList.toggle('key_functional_active', !key.classList.contains('key_functional_active'));
-                        } else {
-                            key.classList.toggle('key_active', !key.classList.contains('key_active'));
-                        }
+                    const keyValue = key.querySelector('.key__value_active').innerText;                 
+
+                    if (code === 'ShiftLeft' || code === 'ShiftRight') {
+                        if (!this.shift) {
+                            this.dispatchAction(e.type, code, keyValue);
+                        }                                   
+                    } else if (code === 'CapsLock') {
+                        this.toggleCapsLock();
+                        
                     } else {
+                        this.removeFocus();
+
                         if (key.classList.contains('key_functional')) {
                             key.classList.add('key_functional_active');
                         } else {
                             key.classList.add('key_active');
                         }
-                    }  
-                }
-                console.log(!this.keyMap[code]);
-                if (!this.keyMap[code]) {
-                    this.keyMap[code] = true;
-                    
-                    if (code === 'CapsLock') {
-                        this.setShiftKeys();
-                    }
-                    if (this.keyMap['ShiftLeft'] || this.keyMap['ShiftRight']) {
-                        this.setShiftKeys();
-                    };
-                    if ((this.keyMap['ShiftLeft'] || this.keyMap['ShiftRight']) && this.keyMap['AltLeft']) {
-                        this.toggleActiveLanguage();
-                    };
-                } else {
-                    if (code === 'CapsLock') {
-                        this.keyMap[code] = false;
-                        this.setDefaultKeys();
+
+                        this.dispatchAction(e.type, code, keyValue);                        
                     }
                 }
 
-                console.log(this.keyMap)
-        
-                this.setFocus();
+                this.keyMap[code] = true;
+                
+                if (this.shift && this.keyMap['AltLeft']) {
+                    this.toggleActiveLanguage();
+                };
+
                 break;
             }
             case 'keyup': {
@@ -210,23 +326,18 @@ export default class Keyboard {
                     }
                 }
 
-                if (code !== 'CapsLock') {
-                    this.keyMap[code] = false;
+                if (code === 'ShiftLeft' || code === 'ShiftRight') {
+                    this.toggleShift(code);
+                } else {
+                    this.updateKeys();
                 }
 
-                console.log(this.keyMap)
+                this.keyMap[code] = false;
 
-                if (!this.keyMap['CapsLock'] && !this.keyMap['ShiftLeft'] && !this.keyMap['ShiftRight']) {
-                    this.setDefaultKeys();
-                };
+                this.setFocus();
+
                 break;
             }
         }   
-    }
-
-    handleKeyUp = (e) => {
-        
-
-        // if (!this.textarea.value) { this.textarea.blur(); }
     }
 }

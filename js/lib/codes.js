@@ -109,7 +109,7 @@ export default {
             shift: ')'
         }
     },
-    'NumpadSubtract': {
+    'Minus': {
         en: {
             default: '-', 
             shift: '_'
@@ -499,7 +499,7 @@ export default {
             shift: 'Ь'
         }
     },
-    'NumpadDecimal': {
+    'Comma': {
         en: {
             default: ',', 
             shift: '<'
