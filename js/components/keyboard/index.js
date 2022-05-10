@@ -1,3 +1,3 @@
-import Keyboard from "./Keyboard.js";
+import Keyboard from './Keyboard';
 
 export default Keyboard;

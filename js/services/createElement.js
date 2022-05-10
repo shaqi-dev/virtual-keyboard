@@ -1,27 +1,33 @@
-import codes from "../lib/codes.js";
+/* eslint-disable import/extensions */
+import codes from '../lib/codes.js';
 
 export default function createElement({
   type,
   classes,
-  attributes, 
+  attributes,
   eventHandlers,
-  appendTo }) {
-  let elementType = type || 'div';
-  let elementClasses = classes || [];
-  let elementAttributes = attributes || {};
-  let elementEventHandlers = eventHandlers || {};
-  let elementAppendTo = appendTo || 'body';
+  appendTo,
+}) {
+  const elementType = type || 'div';
+  const elementClasses = classes || [];
+  const elementAttributes = attributes || {};
+  const elementEventHandlers = eventHandlers || {};
+  const elementAppendTo = appendTo || 'body';
 
-  let element = document.createElement(elementType);
-  for (let className of elementClasses) { element.classList.add(className) }
-  for (let key in elementAttributes) { element.setAttribute(key, elementAttributes[key]) }
-  for (let key in elementEventHandlers) { element.addEventListener(key, elementEventHandlers[key]) }
-  
+  const element = document.createElement(elementType);
+  elementClasses.forEach((className) => { element.classList.add(className); });
+  Object.keys(elementAttributes).forEach((key) => {
+    element.setAttribute(key, elementAttributes[key]);
+  });
+  Object.keys(elementEventHandlers).forEach((key) => {
+    element.addEventListener(key, elementEventHandlers[key]);
+  });
+
   if (element.dataset.code) {
     const elementCode = codes[element.dataset.code];
     const elementContent = document.createElement('div');
     elementContent.classList.add('key__content');
-    for (let key in elementCode) {
+    Object.keys(elementCode).forEach((key) => {
       const innerText = document.createElement('div');
       const innerTextDefault = document.createElement('span');
       const innerTextOnShift = document.createElement('span');
@@ -33,7 +39,7 @@ export default function createElement({
       innerText.append(innerTextDefault);
       innerText.append(innerTextOnShift);
       elementContent.append(innerText);
-    }
+    });
 
     element.append(elementContent);
   }
