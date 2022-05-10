@@ -17,6 +17,33 @@ createElement({
     appendTo: '.app'
 });
 
+const description = createElement({
+    type: 'div',
+    classes: ['description'],
+    attributes: null,
+    eventHandlers: null,
+    appendTo: '.app'
+});
+
+const info1 = createElement({
+    type: 'span',
+    classes: ['description__item'],
+    attributes: null,
+    eventHandlers: null,
+    appendTo: '.description'
+});
+
+const info2 = createElement({
+    type: 'span',
+    classes: ['description__item'],
+    attributes: null,
+    eventHandlers: null,
+    appendTo: '.description'
+});
+
+info1.innerText = 'The keyboard was created on Windows';
+info2.innerText = 'Use Shift + Alt to switch the language';
+
 const keyboard = new Keyboard('keyboard', 'textarea', '.app');
 
 keyboard.init();

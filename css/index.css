@@ -220,6 +220,21 @@ object {
   gap: 20px;
 }
 
+.description {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 600px;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.description__item {
+  font-size: 1.6rem;
+  color: #9c9c9c;
+}
+
 .textarea {
   width: 930px;
   height: 350px;
