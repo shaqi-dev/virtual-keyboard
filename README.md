@@ -1,4 +1,4 @@
-# [Virtual Keyboard](shaqi-dev.github.io/virtual-keyboard/)
+# [Virtual Keyboard](https://shaqi-dev.github.io/virtual-keyboard/)
 
 ## Stack
 `HTML` `CSS` `JavaScript` `ESLint`
