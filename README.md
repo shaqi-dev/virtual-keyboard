@@ -1,4 +1,10 @@
-# virtual-keyboard
-Virtual keyboard for RS School task
+# [Virtual Keyboard](shaqi-dev.github.io/virtual-keyboard/)
 
-![image](https://user-images.githubusercontent.com/71282670/173592897-69222abb-f004-4c14-9b14-b93d40f03a23.png)
+## Stack
+`HTML` `CSS` `JavaScript` `ESLint`
+
+## Screenshot
+![image](https://user-images.githubusercontent.com/71282670/186265581-12a5fafe-54af-4bcd-abaa-317847f25208.png)
+
+## Task
+https://github.com/rolling-scopes-school/tasks/blob/master/tasks/virtual-keyboard/virtual-keyboard-en.md
